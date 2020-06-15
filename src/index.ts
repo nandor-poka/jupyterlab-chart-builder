@@ -31,43 +31,40 @@ const extension: JupyterFrontEndPlugin<void> = {
     settingsRegistry: ISettingRegistry,
     mainMenu: IMainMenu,
     commandPalette: ICommandPalette
-    ) => {
-      const { commands } = app;
-      const commandPrefix = 'jupyterlab-chart-builder:';
-      const pieChartIcon = new LabIcon({
-        name: 'launcher:bar-chart-icon',
-        svgstr: pieChartSvg
+  ) => {
+    const { commands } = app;
+    const commandPrefix = 'jupyterlab-chart-builder:';
+    const pieChartIcon = new LabIcon({
+      name: 'launcher:bar-chart-icon',
+      svgstr: pieChartSvg
+    });
+    console.log('JupyterLab extension jupyterlab-chart-builder is activated!');
+
+    requestAPI<any>('get_example')
+      .then(data => {
+        console.log(data);
+      })
+      .catch(reason => {
+        console.error(
+          `The jupyterlab_chart_builder server extension appears to be missing.\n${reason}`
+        );
       });
-      console.log('JupyterLab extension jupyterlab-chart-builder is activated!');
 
-      requestAPI<any>('get_example')
-        .then(data => {
-          console.log(data);
-        })
-        .catch(reason => {
-          console.error(
-            `The jupyterlab_chart_builder server extension appears to be missing.\n${reason}`
-          );
-        });
+    commands.addCommand(commandPrefix + 'pie chart', {
+      label: 'pie chart',
+      caption: 'piechart',
+      icon: pieChartIcon,
+      execute: async => {
+        return '';
+      }
+    });
 
-      commands.addCommand(
-        commandPrefix + 'pie chart',
-        {
-          label: 'pie chart',
-          caption: 'piechart',
-          icon: pieChartIcon,
-          execute: async => {
-            return "";
-          }
-        }
-      );
-
-      // Add the current tool to the launcher
-      launcher.add({
-        command: commandPrefix + 'pie chart',
-        category: CATEGORY,
-        rank: 1
-      });
+    // Add the current tool to the launcher
+    launcher.add({
+      command: commandPrefix + 'pie chart',
+      category: CATEGORY,
+      rank: 1
+    });
   }
 };
 
